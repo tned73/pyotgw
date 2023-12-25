@@ -3,6 +3,7 @@
 import asyncio
 import logging
 from datetime import datetime
+from typing import Awaitable, Callable, Dict
 
 from pyotgw import vars as v
 from pyotgw.connection import ConnectionManager
@@ -781,7 +782,9 @@ class OpenThermGateway:  # pylint: disable=too-many-public-methods
         self.status.submit_partial_update(v.BOILER, status_boiler)
         return ret
 
-    def subscribe(self, coro):
+    def subscribe(
+        self, coro: Callable[[Dict], Awaitable[None]], part: str = None
+    ) -> bool:
         """
         Subscribe to status updates from the Opentherm Gateway.
         Can only be used after connect()
@@ -789,18 +792,22 @@ class OpenThermGateway:  # pylint: disable=too-many-public-methods
         argument (status) when a status change occurs.
         Return True on success, False if not connected or already
         subscribed.
+        @part is a string with the keys to subscribe to (. seperated)
         """
-        return self.status.subscribe(coro)
+        return self.status.subscribe(coro, part)
 
-    def unsubscribe(self, coro):
+    def unsubscribe(
+        self, coro: Callable[[Dict], Awaitable[None]], part: str = None
+    ) -> bool:
         """
         Unsubscribe from status updates from the Opentherm Gateway.
         Can only be used after connect()
         @coro is a coroutine which has been subscribed with subscribe()
         earlier.
         Return True on success, false if not connected or subscribed.
+        @part is a string with the keys to subscribe to (. seperated)
         """
-        return self.status.unsubscribe(coro)
+        return self.status.unsubscribe(coro, part)
 
     async def _wait_for_cmd(self, cmd, value, timeout=v.OTGW_DEFAULT_TIMEOUT):
         """

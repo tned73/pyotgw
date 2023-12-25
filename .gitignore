@@ -1,3 +1,6 @@
 .project
 .pydevproject
 __pycache__
+.idea
+/pyotgw.egg-info/
+.coverage

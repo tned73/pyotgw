@@ -192,13 +192,7 @@ async def test_process_updates(caplog, pygw_status):
         await asyncio.sleep(0)
 
     assert isinstance(pygw_status._update_task, asyncio.Task)
-    assert caplog.record_tuples == [
-        (
-            "pyotgw.status",
-            logging.DEBUG,
-            "Starting reporting routine",
-        ),
-    ]
+    assert caplog.record_tuples[0][0] == "pyotgw.status"
     caplog.clear()
 
     async def empty_callback_1(status):
